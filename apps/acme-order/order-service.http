@@ -1,0 +1,61 @@
+# For more info on HTTP files go to https://aka.ms/vs/httpfile
+@serviceAddress=http://localhost:8086
+# insert a breakpoint in OrderController.Create to capture a bearer token
+@bearerToken=insert-token-here
+@userId=user@example.com
+
+### List loggers
+GET {{serviceAddress}}/actuator/loggers
+
+### Update loggers
+POST {{serviceAddress}}/actuator/loggers/System.Net.Http
+Content-Type: application/json
+
+{
+    "configuredLevel": "OFF"
+}
+
+### Get All Orders
+GET {{serviceAddress}}/order/all
+Authorization: bearer {{bearerToken}}
+
+### GetOrderByUser
+GET {{serviceAddress}}/order/{{userId}}
+Authorization: bearer {{bearerToken}}
+
+### Post an Order
+POST {{serviceAddress}}/order/add/{{userId}}
+Authorization: bearer {{bearerToken}}
+Content-Type: application/json
+
+{
+  "userId": "{{userId}}",
+  "cart": [
+    {
+      "itemid": "7283caf9-a24f-44ea-baba-a9ee64f86b54",
+      "description": "some item description",
+      "name": "Velo 99 XR1 AXS",
+      "quantity": 1,
+      "price": "1099.99"
+    }
+  ],
+  "total": "1099.99",
+  "address": {
+    "street": "address",
+    "city": "city",
+    "zip": "12345",
+    "state": "AL",
+    "country": "USA"
+  },
+  "delivery": "standard",
+  "card": {
+    "type": "visa",
+    "number": "1234123412341234",
+    "ccv": "1234",
+    "expMonth": "12",
+    "expYear": "12"
+  },
+  "firstname": "first",
+  "lastname": "last",
+  "email": "user@example.com"
+}

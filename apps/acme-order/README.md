@@ -1,26 +1,16 @@
 # ACME Order Service
 
-Requires DotNet version 8.
+Requires [.NET SDK 10](https://dotnet.microsoft.com/download).
 
 ## Getting Started
 
-Download donet
-https://dotnet.microsoft.com/en-us/
+Download the [.NET SDK](https://dotnet.microsoft.com/download)
 
-In Visual Studio Code
-Download the DotNet C# Dev Kit extension
-VS Marketplace Link: https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit
+In Visual Studio Code: install the [**C# Dev Kit** extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit)
 
 ## Locally running acme-order
 
-To run the acme order service, do the following:
-
-Ensure the Local Development dependencies are running. (See main [README](../../local-development/README.md))
-
-```bash
-cd ../../local-development
-docker compose up -d
-```
+Ensure local development dependencies are running (see [local-development README](../../local-development/README.md)).
 
 Start the application:
 
@@ -42,7 +32,7 @@ open localhost:8086/actuator/health
 dotnet publish -r linux-x64
 ```
 
-### Deploy on TAS
+### Deploy on Tanzu Platform
 
 Included [manifest.yml](./manifest.yml) file can be used to deploy the published binary
 

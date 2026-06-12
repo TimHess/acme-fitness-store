@@ -1,16 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using AcmeOrder.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Steeltoe.Connector.PostgreSql.EFCore;
+using Steeltoe.Connectors.EntityFrameworkCore.PostgreSql;
 
 namespace AcmeOrder.Db;
 
-public class PostgresOrderContext(IConfiguration configuration) : OrderContext(configuration)
+public class PostgresOrderContext(IServiceProvider serviceProvider) : OrderContext()
 {
+    private readonly JsonSerializerOptions _jsonSerializerOptions =
+        new() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql(Configuration);
+        optionsBuilder.UseNpgsql(serviceProvider);
+        base.OnConfiguring(optionsBuilder);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -28,19 +34,28 @@ public class PostgresOrderContext(IConfiguration configuration) : OrderContext(c
 
             entity.Property(e => e.Address)
                 .HasColumnName("address")
-                .HasColumnType("json");
+                .HasColumnType("json")
+                .HasConversion(
+                    v => JsonSerializer.Serialize(v, _jsonSerializerOptions),
+                    v => JsonSerializer.Deserialize<Address>(v, _jsonSerializerOptions));
 
             entity.Property(e => e.Card)
                 .HasColumnName("card")
-                .HasColumnType("json");
+                .HasColumnType("json")
+                .HasConversion(
+                    v => JsonSerializer.Serialize(v, _jsonSerializerOptions),
+                    v => JsonSerializer.Deserialize<Card>(v, _jsonSerializerOptions));
 
             entity.Property(e => e.Cart)
                 .HasColumnName("cart")
-                .HasColumnType("json");
+                .HasColumnType("json")
+                .HasConversion(
+                    v => JsonSerializer.Serialize(v, _jsonSerializerOptions),
+                    v => JsonSerializer.Deserialize<ICollection<Cart>>(v, _jsonSerializerOptions));
 
             entity.Property(e => e.Date)
                 .HasColumnName("date")
-                .HasDefaultValue(DateTime.UtcNow);
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             entity.Property(e => e.Delivery)
                 .HasColumnName("delivery")
